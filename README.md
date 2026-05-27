@@ -75,9 +75,9 @@ Team Members: Mayank Mitra and Mishika Kasliwal
 
 <img width="1451" height="726" alt="Screenshot 2026-05-27 173024" src="https://github.com/user-attachments/assets/e708c86b-56cb-4d76-8f0e-8c95a6d20102" />
 
-<img width="1854" height="844" alt="Screenshot 2026-05-27 173130" src="https://github.com/user-attachments/assets/287a0057-3b5f-4347-a1b5-578731f0450f" />
-
 <img width="1805" height="769" alt="Screenshot 2026-05-27 173101" src="https://github.com/user-attachments/assets/2086db6f-cf60-47a5-b8c9-a7a68e40ab74" />
+
+<img width="1854" height="844" alt="Screenshot 2026-05-27 173130" src="https://github.com/user-attachments/assets/287a0057-3b5f-4347-a1b5-578731f0450f" />
 
 <img width="1024" height="593" alt="Screenshot 2026-05-27 173222" src="https://github.com/user-attachments/assets/d7bf9bce-145d-4677-bb9e-e30a3f2139bd" />
 
