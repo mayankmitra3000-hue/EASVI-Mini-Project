@@ -19,15 +19,25 @@ Visual Studio Code
 Git & GitHub
 
 Features and Functionalities Implemented
+
 1.User-friendly online examination system for visually impaired users
+
 2.Audio-based instructions for navigation and exam guidance
+
 3.Text-to-speech functionality using Web Speech API
+
 4.Keyboard-based navigation and answer selection
+
 5.Secure user login and authentication system
+
 6.New question set generation everytime using Google Gemini AI model
+
 7.Responsive and accessible user interface using Tailwind CSS
+
 8.Efficient data storage and retrieval using SQLite3
+
 9.Simple and lightweight web application architecture
+
 
 Installation/Execution Steps to Run the Project
 Prerequisites
@@ -58,3 +68,7 @@ python manage.py runserver
 7.Open the browser and visit:
 http://127.0.0.1:8000/
 The application will now run locally on your system.
+
+Team Members: Mayank Mitra and Mishika Kasliwal
+
+<img width="1805" height="769" alt="Screenshot 2026-05-27 173101" src="https://github.com/user-attachments/assets/2086db6f-cf60-47a5-b8c9-a7a68e40ab74" />
