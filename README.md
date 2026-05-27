@@ -1,2 +1,60 @@
-# EASVI-Mini-Project
-Examination System for the Visually Impaired is an accessibility-focused web application developed to help visually impaired students attend online examinations independently and efficiently. The project is built using Django as the backend , along with HTML, Tailwind CSS, and JavaScript for the frontend, while SQLite3 is used as the database 
+Examination System for the Visually Impaired
+
+Examination System for the Visually Impaired is a web-based accessibility-focused examination platform designed to help visually impaired students attend online exams independently. The system provides audio instructions and reads examination questions aloud using the browser’s Web Speech API. Users can navigate and answer questions through keyboard controls, making the application simple, efficient, and accessible. The project promotes inclusive education by reducing dependency on external assistance during examinations.
+
+Technology Stack and Tools Used:
+Backend
+Django
+Python
+Frontend
+HTML
+Tailwind CSS
+JavaScript
+Database
+SQLite3
+
+Tools & APIs:
+Browser Web Speech API
+Visual Studio Code
+Git & GitHub
+
+Features and Functionalities Implemented
+1.User-friendly online examination system for visually impaired users
+2.Audio-based instructions for navigation and exam guidance
+3.Text-to-speech functionality using Web Speech API
+4.Keyboard-based navigation and answer selection
+5.Secure user login and authentication system
+6.New question set generation everytime using Google Gemini AI model
+7.Responsive and accessible user interface using Tailwind CSS
+8.Efficient data storage and retrieval using SQLite3
+9.Simple and lightweight web application architecture
+
+Installation/Execution Steps to Run the Project
+Prerequisites
+Python installed on the system
+Django installed
+Modern web browser (Chrome recommended)
+
+Steps to Run:
+
+1.Clone the repository:
+git clone <repository-link>
+
+2.Navigate to the project directory:
+cd project-folder
+
+3.Create and activate a virtual environment:
+python -m venv venv
+
+4.Install required dependencies:
+pip install -r requirements.txt
+
+5.Apply database migrations:
+python manage.py migrate
+
+6.Run the Django development server:
+python manage.py runserver
+
+7.Open the browser and visit:
+http://127.0.0.1:8000/
+The application will now run locally on your system.
