@@ -71,4 +71,12 @@ The application will now run locally on your system.
 
 Team Members: Mayank Mitra and Mishika Kasliwal
 
+
+<img width="1451" height="726" alt="Screenshot 2026-05-27 173024" src="https://github.com/user-attachments/assets/e708c86b-56cb-4d76-8f0e-8c95a6d20102" />
+
+<img width="1647" height="714" alt="Screenshot 2026-05-27 173004" src="https://github.com/user-attachments/assets/63eb1963-951a-40de-84d0-0f8b16eaf724" />
+
 <img width="1805" height="769" alt="Screenshot 2026-05-27 173101" src="https://github.com/user-attachments/assets/2086db6f-cf60-47a5-b8c9-a7a68e40ab74" />
+
+
+
