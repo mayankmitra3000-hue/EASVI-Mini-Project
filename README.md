@@ -1,4 +1,4 @@
-Examination System for the Visually Impaired
+Examination System for the Visually Impaired (Team Members: Mayank Mitra and Mishika Kasliwal)
 
 Examination System for the Visually Impaired is a web-based accessibility-focused examination platform designed to help visually impaired students attend online exams independently. The system provides audio instructions and reads examination questions aloud using the browser’s Web Speech API. Users can navigate and answer questions through keyboard controls, making the application simple, efficient, and accessible. The project promotes inclusive education by reducing dependency on external assistance during examinations.
 
@@ -68,8 +68,6 @@ python manage.py runserver
 7.Open the browser and visit:
 http://127.0.0.1:8000/
 The application will now run locally on your system.
-
-Team Members: Mayank Mitra and Mishika Kasliwal
 
 <img width="1647" height="714" alt="Screenshot 2026-05-27 173004" src="https://github.com/user-attachments/assets/63eb1963-951a-40de-84d0-0f8b16eaf724" />
 
