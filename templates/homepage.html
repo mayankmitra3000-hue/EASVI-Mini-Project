@@ -1,0 +1,122 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontSize: {
+                        hero: '2.5rem',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideLeft: {
+                            '0%': { transform: 'translateX(-100%)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        },
+                        slideRight: {
+                            '0%': { transform: 'translateX(100%)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        },
+                    },
+                    animation: {
+                        fadeIn: 'fadeIn 1s ease-in-out forwards',
+                        slideLeft: 'slideLeft 1s ease-out forwards',
+                        slideRight: 'slideRight 1s ease-out forwards',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <script>
+  window.onload = () => {
+    setTimeout(() => {
+        const msg1 = new SpeechSynthesisUtterance(
+        "Edusoft Elite Edition Examination and Evaluation System"
+        );
+        const msg2 = new SpeechSynthesisUtterance(
+        "Please press M for Creating a new account and N for logging into your existing account ",
+        );
+        window.speechSynthesis.speak(msg1);
+        window.speechSynthesis.speak(msg2);
+    }, 1000); // 2000 milliseconds = 2 seconds
+  };
+    </script>
+
+    <script>
+        document.addEventListener("keydown", function (event) {
+        const key = event.key.toLowerCase();
+
+        {#if (window.speechSynthesis.speaking) {#}
+        {#    window.speechSynthesis.cancel(); //stop speaking if speech is going on#}
+        {#}#}
+
+        if (key === "m") {
+            window.location.href = "{% url 'signup' %}";
+        }
+
+        if (key === "n") {
+            window.location.href = "{% url 'login' %}";
+        }
+
+        });
+    </script>
+
+    <script>
+    window.addEventListener("beforeunload", () => {
+        window.speechSynthesis.cancel();
+    });
+    </script>
+
+
+
+
+    <style>
+        body {
+            animation: fadeIn 2s ease-in-out forwards;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-cover bg-no-repeat select-none"
+      style="background-image: url('{% static 'images/homepage.gif' %}')">
+
+<!-- Logo + Tagline -->
+<div class="ml-[340px] mt-[-100px] animate-fadeIn">
+    <img src="{% static 'images/edusofteelogo.png' %}"
+         alt="Logo"
+         class="w-[600px]">
+
+    <h1 class="mt-[-140px] ml-[2px] font-['hero'] text-3xl font-semibold text-black drop-shadow-lg select-none animate-slideRight">
+        EdusoftEE – Examination and Evaluation System
+    </h1>
+
+    <div class="flex gap-20 mt-8 ml-[140px] animate-slideLeft">
+        <!-- Sign Up -->
+        <a href="{% url 'signup' %}"
+           class="px-8 py-3 rounded-xl bg-[#3CBD79] text-white font-semibold
+                  hover:bg-[#34a96b] transition duration-300 select-none">
+            Sign Up
+        </a>
+
+        <!-- Login -->
+        <a href="{% url 'login' %}"
+           class="px-8 py-3 rounded-xl border-2 border-[#3CBD79] text-[#3CBD79]
+                  font-semibold hover:bg-[#3CBD79] hover:text-white transition duration-300 select-none">
+            Login
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

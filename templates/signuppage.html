@@ -1,0 +1,308 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontSize: {
+                        hero: '2.5rem',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideLeft: {
+                            '0%': { transform: 'translateX(-100%)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        },
+                        slideRight: {
+                            '0%': { transform: 'translateX(100%)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        },
+                    },
+                    animation: {
+                        fadeIn: 'fadeIn 1s ease-in-out forwards',
+                        slideLeft: 'slideLeft 1s ease-out forwards',
+                        slideRight: 'slideRight 1s ease-out forwards',
+                    },
+                }
+            }
+        }
+    </script>
+      <script>
+    window.onload = () => {
+        setTimeout(() => {
+            const msg1 = new SpeechSynthesisUtterance(
+                "This is the Sign Up Page to create a new account. Click tab to start filling the form and change the field and press b to go back to previous window."
+            );
+
+            window.speechSynthesis.cancel(); // safety
+            window.speechSynthesis.speak(msg1);
+        }, 1000);
+    };
+</script>
+
+    <script>
+        let formInputs = [];
+
+        window.addEventListener("DOMContentLoaded", () => {
+            formInputs = Array.from(
+                document.querySelectorAll("form input")
+            );
+        });
+
+        document.addEventListener("keydown", function (event) {
+            const key = event.key.toLowerCase();
+
+            if (key === "b") {
+            const active = document.activeElement;
+
+            if (!active || active.tagName === "BODY") {
+                window.location.href = "{% url 'home' %}";
+            }
+         }
+
+        if (event.key === "Tab") {
+        const active = document.activeElement;
+        const form = active?.closest("form");
+
+        if (!form) return;
+
+        const focusables = form.querySelectorAll(
+            "input:not([type='hidden']), button"
+        );
+
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+
+        if (!event.shiftKey && active === last) {
+            event.preventDefault();
+            first.focus();
+        }
+
+        if (event.shiftKey && active === first) {
+            event.preventDefault();
+            last.focus();
+        }
+    }
+
+        if (event.key === "Control") {
+            const active = document.activeElement;
+
+            if (active && active.type === "email") {
+                event.preventDefault(); // stop tabbing away
+                readFilledForm();
+            }
+        }
+
+        if (event.key === "Escape") {
+            const active = document.activeElement;
+
+            // Only reset if focus is inside a form
+            if (active && active.closest("form")) {
+                event.preventDefault();
+
+                const form = active.closest("form");
+                form.reset();
+
+                // 🔹 Remove focus from all fields
+                active.blur();
+                document.body.focus();
+
+                // Optional: speech feedback
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(
+                    new SpeechSynthesisUtterance("Form has been reset")
+                );
+            }
+        }
+
+        if (event.key === "Alt") {
+            const active = document.activeElement;
+
+            if (active && active.closest("form")) {
+                event.preventDefault();
+
+                const form = active.closest("form");
+
+                // ✅ Triggers normal validation
+                if (form.checkValidity()) {
+                    form.requestSubmit();
+                }
+
+                else {
+                    // 🔊 Optional speech feedback
+                    window.speechSynthesis.cancel();
+                    window.speechSynthesis.speak(
+                        new SpeechSynthesisUtterance(
+                            "Please fill all required fields before submitting"
+                        )
+                    );
+                }
+            }
+        }
+
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.querySelector("form");
+
+            form.addEventListener("submit", function (event) {
+
+            // If form is NOT valid
+            if (!form.checkValidity()) {
+                event.preventDefault(); // ❌ stop submission
+
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(
+                    new SpeechSynthesisUtterance(
+                    "Please fill all required fields before submitting the form."
+                    )
+                );
+
+                // 🔹 Move focus to first invalid field
+                const firstInvalid = form.querySelector(":invalid");
+                if (firstInvalid) {
+                    firstInvalid.focus();
+                }
+            }
+            });
+        });
+    </script>
+
+
+    <script>
+    function announceField(element) {
+        if (!element) return;
+
+        window.speechSynthesis.cancel();
+        let message = "";
+
+        /* 🔹 INPUT fields */
+        if (element.tagName === "INPUT") {
+
+            // Special case: EMAIL field
+            if (element.type === "email" || element.name === "email") {
+                message =
+                "You are now on the email field. " +
+                "Press control to hear the filled details, " +
+                "and press Alt to submit the form.";
+            }
+            else {
+                const label =
+                element.placeholder ||
+                element.name ||
+                "input field";
+
+                message = "Please enter " + label;
+            }
+        }
+
+        /* 🔹 SUBMIT BUTTON */
+        else if (element.tagName === "BUTTON" && element.type === "submit") {
+            message =
+            "You are now on the signup button. " +
+            "Press Enter to submit the form, " +
+            "or press Escape to reset the form.";
+        }
+
+        if (message !== "") {
+            const msg = new SpeechSynthesisUtterance(message);
+            window.speechSynthesis.speak(msg);
+        }
+    }
+    </script>
+
+    <script>
+    function readFilledForm() {
+        window.speechSynthesis.cancel();
+
+        const inputs = document.querySelectorAll("form input");
+        let text = "";
+
+        inputs.forEach(input => {
+
+            // 🚫 Skip hidden fields (CSRF token)
+            if (input.type === "hidden") return;
+
+            const label =
+                input.placeholder ||
+                input.name ||
+                "field";
+
+            const value = input.value.trim();
+
+            if (input.type === "password") {
+                text += label + " is entered. ";
+            } else if (value !== "") {
+                text += label + " is " + value + ". ";
+            } else {
+                text += label + " is empty. ";
+            }
+        });
+
+        if (!text) return;
+
+        const msg = new SpeechSynthesisUtterance(text);
+        window.speechSynthesis.speak(msg);
+    }
+</script>
+
+    <script>
+    document.addEventListener("focusin", function (event) {
+        announceField(event.target);
+    });
+    </script>
+
+
+
+    <script>
+    window.addEventListener("beforeunload", () => {
+        window.speechSynthesis.cancel();
+    });
+    </script>
+
+</head>
+
+<body class="min-h-screen bg-cover bg-no-repeat  flex items-center justify-center bg-gray-100"
+style="background-image:url('{% static 'images/signuppic.jpg' %}')">
+
+    <div class="bg-white mt-[-20px] ml-[95px] p-10 rounded-lg shadow-lg w-[600px] h-[520px] animate-slideLeft">
+        <h1 class="text-2xl font-bold mt-[-20px] mb-6 text-center">Create New Account</h1>
+        <form method="POST" action="{% url 'signupaction' %}" class="flex flex-col gap-4">
+            {% csrf_token %}
+            <input type="text" id="username" name="username" placeholder="Username" class="p-2 border rounded" required>
+            <input type="password" name="password" placeholder="Password" class="p-2 border rounded" required>
+            <input type="text" name="fullname" placeholder="Full Name" class="p-2 border rounded" required>
+            <input type="text" name="uniname" placeholder="University Name" class="p-2 border rounded" required>
+            <input type="number" name="mobileno" placeholder="Mobile No" class="p-2 border rounded" required>
+            <input type="email" name="email" placeholder="Email" class="p-2 border rounded" required>
+
+            <button type="submit" class="bg-green-500 text-white p-2 rounded hover:bg-green-600">
+                Sign Up
+            </button>
+        </form>
+        <p class="text-center mt-4 text-sm">
+            Already have an account?
+            <a href="{% url 'login' %}" class="text-green-600 font-semibold hover:underline">
+                Login
+            </a>
+        </p>
+    </div>
+
+    <img src="{% static 'images/student1.png' %}"
+         alt="studenticon"
+         class="w-[580px] mt-[-80px] ml-[-80px] animate-slideRight">
+
+</body>
+
+</html>
+

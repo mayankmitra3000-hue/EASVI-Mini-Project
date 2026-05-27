@@ -1,0 +1,253 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontSize: {
+                        hero: '2.5rem',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideLeft: {
+                            '0%': { transform: 'translateX(-100%)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        },
+                        slideRight: {
+                            '0%': { transform: 'translateX(100%)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        },
+                    },
+                    animation: {
+                        fadeIn: 'fadeIn 1s ease-in-out forwards',
+                        slideLeft: 'slideLeft 1s ease-out forwards',
+                        slideRight: 'slideRight 1s ease-out forwards',
+                    },
+                }
+            }
+        }
+    </script>
+
+
+
+    <script>
+        /* Page Introduction */
+        window.onload = () => {
+        setTimeout(() => {
+            const msg = new SpeechSynthesisUtterance(
+            "This is the Login page. Enter your username and password. " +
+            "Press Tab to move between fields. Press Enter to submit. " +
+            "Press Escape to reset the form. Press B to go back."
+            );
+
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(msg);
+        }, 2000);
+        };
+    </script>
+    `
+    <script>
+document.addEventListener("keydown", function (event) {
+    const key = event.key.toLowerCase();
+    const active = document.activeElement;
+    const form = active?.closest("form");
+
+    /*  Go back */
+    if (key === "b" && (!active || active.tagName === "BODY")) {
+        window.location.href = "{% url 'home' %}";
+    }
+
+    /* Trap TAB inside form */
+    if (event.key === "Tab" && form) {
+        const focusables = form.querySelectorAll(
+            "input:not([type='hidden']), button"
+        );
+
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+
+        if (!event.shiftKey && active === last) {
+            event.preventDefault();
+            first.focus();
+        }
+
+        if (event.shiftKey && active === first) {
+            event.preventDefault();
+            last.focus();
+        }
+    }
+
+    if (event.key === "Control") {
+            const active = document.activeElement;
+
+            if (active && active.type === "password") {
+                event.preventDefault(); // stop tabbing away
+                readFilledForm();
+            }
+        }
+
+    /* Reset Form */
+    if (event.key === "Escape" && form) {
+        event.preventDefault();
+        form.reset();
+        active.blur();
+        document.body.focus();
+
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(
+            new SpeechSynthesisUtterance("Login form has been reset")
+        );
+    }
+
+});
+</script>
+
+<script>
+function announceField(element) {
+    if (!element) return;
+
+    window.speechSynthesis.cancel();
+    let message = "";
+
+    if (element.tagName === "INPUT") {
+        if (element.type === "password") {
+            message = "Please enter your password";
+        } else {
+            message = "Please enter your username";
+        }
+    }
+
+    else if (element.tagName === "BUTTON") {
+        message =
+        "You are on the login button. " +
+        "Press Enter to submit. ";
+    }
+
+    if (message) {
+        window.speechSynthesis.speak(
+            new SpeechSynthesisUtterance(message)
+        );
+    }
+}
+</script>
+
+    <script>
+function readFilledForm() {
+    window.speechSynthesis.cancel();
+
+    const inputs = document.querySelectorAll("form input");
+    let text = "";
+
+    inputs.forEach(input => {
+        if (input.type === "hidden") return;
+
+        if (input.type === "password") {
+            text += "Password is entered. ";
+        } else if (input.value.trim()) {
+            text += "Username is " + input.value + ". ";
+        } else {
+            text += "Username is empty. ";
+        }
+    });
+
+    window.speechSynthesis.speak(
+        new SpeechSynthesisUtterance(text)
+    );
+}
+</script>
+
+<script>
+document.addEventListener("focusin", e => {
+    announceField(e.target);
+});
+
+window.addEventListener("beforeunload", () => {
+    window.speechSynthesis.cancel();
+});
+</script>
+
+</head>
+
+<body class="min-h-screen bg-cover bg-no-repeat flex items-center justify-center bg-gray-100"
+      style="background-image:url('{% static 'images/signuppic.jpg' %}')">
+
+    <!-- Login Card -->
+    <div class="bg-white mt-[-20px] ml-[95px] p-10 rounded-lg shadow-lg w-[600px] h-[420px] animate-slideLeft">
+        <h1 class="text-2xl font-bold mb-6 text-center">Welcome Back</h1>
+        <h1 class="text-xl font-bold mt-[-20px] mb-6 text-center text-green-500">(Please enter your username & password)</h1>
+
+        {% if message %}
+        <p id="login-error"
+        class="text-red-600 font-semibold text-center mb-3"
+        role="alert"
+        aria-live="assertive">
+        {{ message }}
+        </p>
+        {% endif %}
+
+        <form method="POST" action="{% url 'loginaction' %}" class="flex flex-col gap-4">
+            {% csrf_token %}
+
+            <input type="text"
+                   name="username"
+                   placeholder="Username"
+                   class="p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-400"
+                   required>
+
+            <input type="password"
+                   name="password"
+                   placeholder="Password"
+                   class="p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-400"
+                   required>
+
+            <button type="submit"
+                    class="bg-green-500 text-white mt-[10px] p-2 rounded hover:bg-green-600 transition">
+                Login
+            </button>
+        </form>
+
+        <p class="text-center mt-4 text-sm">
+            Don’t have an account?
+            <a href="{% url 'signup' %}" class="text-green-600 font-semibold hover:underline">
+                Sign Up
+            </a>
+        </p>
+    </div>
+
+    <!-- Side Image -->
+    <img src="{% static 'images/student2.png' %}"
+         alt="studenticon"
+         class="w-[560px] mt-[-60px] ml-[-80px] animate-slideRight">
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const error = document.getElementById("login-error");
+    const form = document.querySelector("form");
+
+    if (error && form) {
+        // Announce error
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(
+            new SpeechSynthesisUtterance(error.innerText)
+        );
+
+        // Clear input fields
+        form.querySelectorAll("input").forEach(input => {
+            if (input.type !== "hidden") {
+                input.value = "";
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>

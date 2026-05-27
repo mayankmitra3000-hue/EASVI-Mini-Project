@@ -1,0 +1,278 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Examination</title>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            animation: fadeIn 1s ease-in-out;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-cover bg-no-repeat select-none text-white"
+      style="background-image: url('{% static 'images/greenback.jpg' %}')">
+
+<!-- 🔴 Fullscreen Overlay -->
+<div id="overlay" class="fixed inset-0 bg-black flex items-center justify-center z-50">
+    <p class="text-xl text-center">
+        Press any key or click to start exam in Fullscreen mode
+    </p>
+</div>
+
+<!-- Content -->
+<div class="mt-0 p-10">
+
+    <div class="flex items-center justify-between mb-6">
+
+    <!-- Heading -->
+    <h1 class="text-3xl text-black bg-white inline-block px-4 py-2 rounded-lg">
+        CORE JAVA (COURSE CODE - CS3C108)
+    </h1>
+
+    <!-- ⏳ TIMER -->
+    <div class="text-center">
+        <span id="timerBox" class="bg-black text-white px-4 py-2 rounded-lg text-lg">
+            Time Left: <span id="timer">30:00</span>
+        </span>
+    </div>
+
+</div>
+
+    <form method="POST" action="{% url 'examination' %}">
+        {% csrf_token %}
+
+        <!-- Questions -->
+        <div id="questionsContainer">
+
+            {% for q in questions %}
+                <div class="question mb-6 bg-white p-4 rounded-lg min-h-[400px] text-black {% if not forloop.first %}hidden{% endif %}">
+
+                    <p class="font-bold">
+                        Question {{ forloop.counter }} of {{ questions|length }}
+                    </p>
+
+                    <p class="mt-2">{{ q.question }}</p>
+
+                    <ul class="mt-3">
+                        {% for opt in q.options %}
+                            <li>
+                                <input type="radio"
+                                       name="q{{ forloop.parentloop.counter }}"
+                                       value="{{ opt }}"
+                                       required>
+                                {{ opt }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+            {% endfor %}
+
+        </div>
+
+    <!-- Navigation + Submit Buttons -->
+        <div class="flex items-center justify-between mb-6">
+            <button type="button" onclick="prevQuestion()"
+                    class="bg-gray-700 px-4 py-2 rounded text-white transform hover:scale-105 transition duration-300">
+                Previous
+            </button>
+
+            <button type="button"
+                onclick="submitExam()"
+                class="bg-blue-700 px-6 py-2 rounded text-white transform hover:scale-105 transition duration-300">
+                    Submit Exam
+            </button>
+
+            <button type="button" onclick="nextQuestion()" class="bg-yellow-500 px-4 py-2 rounded text-white transform hover:scale-105 transition duration-300"> Next </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+<!-- ✅ SCRIPT -->
+<script>
+let currentQuestion = 0;
+const questions = document.querySelectorAll(".question");
+
+// 🔊 TEXT TO SPEECH FUNCTION
+let speech;
+
+function speakText(text) {
+    window.speechSynthesis.cancel(); // stop previous
+
+    speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "en-US";
+    speech.rate = 1;
+    speech.pitch = 1;
+
+    window.speechSynthesis.speak(speech);
+}
+
+// 📢 READ CURRENT QUESTION
+function readCurrentQuestion() {
+    let currentQ = questions[currentQuestion];
+
+    let questionText = currentQ.querySelector("p:nth-of-type(2)").innerText;
+
+    let options = currentQ.querySelectorAll("li");
+    let optionsText = "";
+
+    options.forEach((opt, i) => {
+        optionsText += `Option ${i + 1}: ${opt.innerText}. `;
+    });
+
+    let fullText = `Question ${currentQuestion + 1}. ${questionText}. ${optionsText}`;
+    speakText(fullText);
+}
+
+// SHOW QUESTION
+function showQuestion(index) {
+    questions.forEach((q, i) => {
+        q.classList.add("hidden");
+
+        if (i === index) {
+            q.classList.remove("hidden");
+        }
+    });
+
+    readCurrentQuestion(); // 🔊 auto speak
+}
+
+// NEXT
+function nextQuestion() {
+    if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        showQuestion(currentQuestion);
+    }
+}
+
+// PREVIOUS
+function prevQuestion() {
+    if (currentQuestion > 0) {
+        currentQuestion--;
+        showQuestion(currentQuestion);
+    }
+}
+
+document.addEventListener("keydown", function(e) {
+
+    if (e.key.toLowerCase() === "n") nextQuestion();
+    if (e.key.toLowerCase() === "p") prevQuestion();
+    if (e.key.toLowerCase() === "Enter") submitExam();
+
+    if (e.key === "Enter" && e.altKey) {
+        e.preventDefault(); // prevent default form submit
+        submitExam();
+    }
+
+    if (e.key.toLowerCase() === "r") {
+        readCurrentQuestion();
+    }
+
+    // 🎯 Option selection
+    if (["1", "2", "3", "4"].includes(e.key)) {
+        let currentQ = questions[currentQuestion];
+        let options = currentQ.querySelectorAll("input[type='radio']");
+
+        let index = parseInt(e.key) - 1;
+
+        if (options[index]) {
+            options[index].checked = true;
+
+            let selectedText = options[index].value;
+            speakText(`You selected option ${e.key}. ${selectedText}`);
+        }
+    }
+});
+
+
+// 🖥️ FULLSCREEN
+function openFullscreen() {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    }
+}
+
+// FIRST INTERACTION → FULLSCREEN + START AUDIO
+function triggerFullscreenOnce() {
+    openFullscreen();
+    document.getElementById("overlay").style.display = "none";
+
+    // Start first question audio
+    setTimeout(() => {
+        showQuestion(0);
+    }, 300);
+
+    document.removeEventListener("click", triggerFullscreenOnce);
+    document.removeEventListener("keydown", triggerFullscreenOnce);
+}
+
+document.addEventListener("click", triggerFullscreenOnce);
+document.addEventListener("keydown", triggerFullscreenOnce);
+
+// ⏳ TIMER (30 min)
+let totalTime = 30 * 60;
+const timerDisplay = document.getElementById("timer");
+const timerBox = document.getElementById("timerBox");
+
+function updateTimer() {
+    let minutes = Math.floor(totalTime / 60);
+    let seconds = totalTime % 60;
+
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+
+    timerDisplay.textContent = `${minutes}:${seconds}`;
+
+    // 🔴 last 5 min warning
+    if (totalTime <= 300) {
+        timerBox.classList.remove("bg-black");
+        timerBox.classList.add("bg-red-600");
+    }
+
+    // ⛔ auto submit
+    if (totalTime <= 0) {
+        clearInterval(timerInterval);
+        alert("Time's up! Submitting exam...");
+        submitExam();
+
+    }
+
+    totalTime--;
+}
+
+const timerInterval = setInterval(updateTimer, 1000);
+
+function submitExam() {
+
+    // 🔍 Check if at least one question answered
+    let answered = document.querySelectorAll("input[type='radio']:checked").length;
+
+    if (answered === 0) {
+        speakText("You have not answered any question.");
+        alert("Please answer at least one question!");
+        return;
+    }
+
+    // 🔊 Voice confirmation
+    speakText("Submitting your exam");
+
+    setTimeout(() => {
+        document.querySelector("form").submit();
+    }, 1000);
+}
+
+
+
+</script>
+</body>
+</html>

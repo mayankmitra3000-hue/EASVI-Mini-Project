@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Examination Instructions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
+
+<div class="max-w-3xl w-full p-8 bg-gray-800 rounded-2xl shadow-lg">
+
+    <h1 class="text-3xl font-bold mb-6 text-center">📝 Examination Instructions</h1>
+
+    <p class="mb-4">
+        This examination system is designed for visually impaired students. You can complete the exam using only your keyboard .
+    </p>
+
+    <h2 class="text-xl font-semibold mt-6 mb-2">⌨️ Keyboard Controls</h2>
+    <ul class="list-disc ml-6 space-y-2">
+        <li><b>1</b> → Option 1</li>
+        <li><b>2</b> → Option 2</li>
+        <li><b>3</b> → Option 3</li>
+        <li><b>4</b> → Option 4</li>
+    </ul>
+
+    <h2 class="text-xl font-semibold mt-6 mb-2">📜 Reading Questions</h2>
+    <p>
+        Questions and the options will be read automatically.
+        You can repeat the question audio by pressing R.
+    </p>
+
+    <h2 class="text-xl font-semibold mt-6 mb-2">📌 Quick Navigation</h2>
+    <ul class="list-disc ml-6 space-y-2">
+        <li><b>N</b> → Next question</li>
+        <li><b>P</b> → Previous question</li>
+    </ul>
+
+    <h2 class="text-xl font-semibold mt-6 mb-2">✅ Submit Exam</h2>
+    <p>
+        Press <b>Alt + Enter</b> to submit your exam.
+    </p>
+
+    <h2 class="text-xl font-semibold mt-6 mb-2">⚠️ Important Guidelines</h2>
+    <ul class="list-disc ml-6 space-y-2">
+        <li>Do not refresh the page</li>
+        <li>All questions are mandatory</li>
+    </ul>
+
+    <p class="text-center text-yellow-400 mt-6">
+        Press <b>Enter</b> to start exam in Fullscreen mode
+    </p>
+
+    <div class="mt-6 text-center">
+        <button onclick="startExam()"
+            class="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-xl text-lg font-semibold">
+            ▶ Start Test
+        </button>
+    </div>
+
+</div>
+
+<script>
+/* 🎤 Speak function */
+function speak(text) {
+    window.speechSynthesis.cancel();
+    const msg = new SpeechSynthesisUtterance(text);
+    msg.rate = 1;
+    msg.pitch = 1;
+    window.speechSynthesis.speak(msg);
+}
+
+/* 📢 Full Instructions Text */
+const instructionsText =
+    "Welcome to the examination instructions page. " +
+    "This system is designed for visually impaired students. " +
+
+    "Keyboard controls are as follows. " +
+    "Press 1 for option one, 2 for option two, 3 for option three, and 4 for option four. " +
+
+    "Questions and options will be read automatically. " +
+    "Press R to repeat the question audio. " +
+
+    "For navigation, press N for next question and P for previous question. " +
+
+    "To submit the exam, press Alt plus Enter. " +
+
+    "Important guidelines. Do not refresh the page. All questions are mandatory. " +
+
+    "Press Enter to start the exam, after pressing enter click space to commence your exam in full screen mode.";
+
+/* 🚀 Speak on load */
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        speak(instructionsText);
+    }, 1000);
+});
+
+/* 🔁 Keyboard controls */
+document.addEventListener("keydown", function(e) {
+
+    // Repeat instructions
+    if (e.key.toLowerCase() === "r") {
+        speak("Repeating instructions");
+        setTimeout(() => speak(instructionsText), 500);
+    }
+
+    // Start exam
+    if (e.key === "Enter") {
+        speak("Starting exam");
+        setTimeout(() => {
+            startExam();
+        }, 800);
+    }
+});
+
+/* 📺 Fullscreen */
+function openFullscreen() {
+    const elem = document.documentElement;
+
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+    }
+}
+
+/* ▶ Start Exam */
+function startExam() {
+    openFullscreen();
+    window.location.href = "/examination/";
+}
+
+/* 🔊 Stop speech when leaving */
+window.addEventListener("beforeunload", () => {
+    window.speechSynthesis.cancel();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-100 flex items-center justify-center h-screen">
+
+<div class="bg-white p-10 rounded-lg shadow-lg text-center">
+
+    <h1 class="text-3xl font-bold mb-4">Exam Result</h1>
+
+    <p id="resultText" class="text-xl">
+        You scored <span class="font-bold text-green-600">{{ score }}</span>
+        out of <span class="font-bold">{{ total }}</span>
+    </p>
+
+    <a href="{% url 'dashboard' %}"
+       id="quitBtn"
+       class="mt-6 inline-block bg-blue-600 text-white px-6 py-2 rounded">
+        Quit
+    </a>
+
+</div>
+
+<script>
+/* 🔊 Speak function */
+function speak(text) {
+    window.speechSynthesis.cancel();
+    const msg = new SpeechSynthesisUtterance(text);
+    msg.rate = 1;
+    msg.pitch = 1;
+    window.speechSynthesis.speak(msg);
+}
+
+/* 📢 Read Result */
+function readResult() {
+    const resultText = document.getElementById("resultText").innerText;
+
+    const message =
+        resultText +
+        ". Press Q to quit and return to dashboard. " +
+        "Press R to hear this result again.";
+
+    speak(message);
+}
+
+/* 🚀 On Load */
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        readResult();
+    }, 800);
+});
+
+/* ⌨️ Keyboard Controls */
+document.addEventListener("keydown", (e) => {
+
+    // 🔁 Repeat result
+    if (e.key.toLowerCase() === "r") {
+        speak("Repeating result");
+        setTimeout(() => readResult(), 500);
+    }
+
+    // 🚪 Quit shortcut
+    if (e.key.toLowerCase() === "q") {
+        speak("Returning to dashboard");
+        setTimeout(() => {
+            window.location.href = "{% url 'dashboard' %}";
+        }, 1000);
+    }
+});
+
+/* 🖱️ Click Quit → Voice */
+document.getElementById("quitBtn").addEventListener("click", (e) => {
+    e.preventDefault();
+
+    speak("Exiting to dashboard");
+
+    setTimeout(() => {
+        window.location.href = "{% url 'dashboard' %}";
+    }, 800);
+});
+
+/* 🔊 Stop speech on leave */
+window.addEventListener("beforeunload", () => {
+    window.speechSynthesis.cancel();
+});
+</script>
+
+</body>
+</html>

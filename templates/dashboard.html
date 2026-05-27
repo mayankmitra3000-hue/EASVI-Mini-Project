@@ -1,0 +1,173 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#22c55e'
+                    },
+                    animation: {
+                        fadeIn: 'fadeIn 1s ease-in-out forwards',
+                        float: 'float 3s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        float: {
+                            '0%,100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script>
+/* 🎤 Speak helper */
+function speak(text) {
+    window.speechSynthesis.cancel();
+    const msg = new SpeechSynthesisUtterance(text);
+    msg.rate = 1;
+    window.speechSynthesis.speak(msg);
+}
+
+/* 📢 Instructions text (reusable) */
+const instructionsText =
+    "Welcome to your dashboard. " +
+    "Press H for Home, P for Profile, E for Exams, R for Results. " +
+    "Press S to start test. And Z to try practice zone. Press L to logout. " ;
+
+/* 📢 Page Intro */
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        speak(instructionsText);
+    }, 1500);
+});
+
+/* ⌨️ Keyboard Navigation */
+document.addEventListener("keydown", (e) => {
+    const key = e.key.toLowerCase();
+
+    switch (key) {
+
+        /* 🔁 ALT → Repeat Instructions */
+        case "alt":
+            speak(instructionsText);
+            break;
+
+        case "h":
+            speak("Opening home");
+            window.location.href = "#";
+            break;
+
+        case "p":
+            speak("Opening profile");
+            window.location.href = "#";
+            break;
+
+        case "e":
+            speak("Opening exams");
+            window.location.href = "#";
+            break;
+
+        case "r":
+            speak("Opening results");
+            window.location.href = "#";
+            break;
+
+        case "s":
+            speak("Starting test");
+            window.location.href = "{% url 'starttest' %}";
+            break;
+
+        case "l":
+            speak("Logging out");
+            window.location.href = "{% url 'logout' %}";
+            break;
+
+        case "escape":
+            speak("Resetting focus");
+            document.body.focus();
+            break;
+    }
+});
+
+/* 🔊 Stop speech on page leave */
+window.addEventListener("beforeunload", () => {
+    window.speechSynthesis.cancel();
+});
+</script>
+
+
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-indigo-900 via-black to-gray-900 text-white">
+
+<!-- Navbar -->
+<div class="flex justify-between items-center px-8 py-4 backdrop-blur-lg bg-white/10 shadow-lg">
+    <div class="flex items-center gap-4">
+        <img src="{% static 'images/edusofteelogo.png' %}" class="w-36 hover:scale-110 transition">
+        <h1 class="text-xl font-bold tracking-wide">
+            Welcome <span class="text-secondary">{{ username }}</span>
+        </h1>
+
+    </div>
+
+    <div class="flex items-center gap-6">
+        <button class="hover:text-secondary">Home</button>
+        <button class="hover:text-secondary">Profile</button>
+        <button class="hover:text-secondary">Exams</button>
+        <button class="hover:text-secondary">Results</button>
+        <a href="{% url 'logout' %}" class="text-red-400 hover:text-red-600">Logout</a>
+
+        <img src="{% static 'images/pfpbg.png' %}" class="w-12 h-12 rounded-full border-2 border-white hover:scale-110 transition">
+    </div>
+</div>
+
+<!-- Hero Section -->
+<div class="text-center mt-16 animate-fadeIn">
+    <h1 class="text-4xl font-extrabold mb-4">Welcome to Your Dashboard</h1>
+    <p class="text-gray-300">Manage exams, track results, and grow smarter 🚀</p>
+</div>
+
+<!-- Cards Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-10 px-20 mt-16">
+
+    <!-- Start Test Card -->
+    <a href="{% url 'starttest' %}" class="group">
+        <div class="bg-white/10 h-[380px] backdrop-blur-xl p-8 rounded-3xl shadow-xl hover:scale-105 transition duration-300">
+            <img src="{% static 'images/dashtest1.png' %}" class="mx-auto w-40 mb-6 group-hover:animate-float">
+            <h2 class="text-2xl font-bold text-center mb-2">Start Test</h2>
+            <p class="text-gray-400 text-center">Begin your examination journey</p>
+        </div>
+    </a>
+
+    <!-- Practice Card -->
+    <div class="bg-white/10 backdrop-blur-xl p-8 rounded-3xl shadow-xl hover:scale-105 transition duration-300 cursor-pointer">
+        <img src="{% static 'images/dashtest2.png' %}" class="mx-auto w-52 mb-6 hover:animate-float">
+        <h2 class="text-2xl font-bold text-center mb-2">Practice Zone</h2>
+        <p class="text-gray-400 text-center">Sharpen your skills with practice</p>
+    </div>
+
+</div>
+
+<!-- Footer -->
+<div class="text-center mt-20 text-gray-500 text-sm">
+    © 2026 EduSoft Elite | All rights reserved
+</div>
+
+</body>
+</html>
