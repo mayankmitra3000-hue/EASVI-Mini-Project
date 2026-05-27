@@ -15,7 +15,7 @@ SQLite3
 
 Tools & APIs:
 Browser Web Speech API
-Visual Studio Code
+Pycharm IDE
 Git & GitHub
 
 Features and Functionalities Implemented
